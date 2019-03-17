@@ -20,6 +20,17 @@ function checkCashRegister(price, cash, cid) {
   }
 
   cashRegister.change = getCustomersChange(changeNeeded, cid);
+
+  if (changeNeeded > getTotalCashRegisterChange(cashRegister.change)) {
+    cashRegister.status = REGISTER_STATUS.insufficientFunds;
+    cashRegister.change = [];
+  }
+
+  if (cashRegister.status === REGISTER_STATUS.closed) {
+    cashRegister.change = [...cid];
+  }
+
+  return cashRegister;
 }
 
 function getCustomersChange(changeNeeded, changeInDrawer) {
@@ -36,7 +47,7 @@ function getCustomersChange(changeNeeded, changeInDrawer) {
     "ONE HUNDRED": 100.0
   };
 
-  for (let i = changeInDrawer.length - 1; i <= 0; i--) {
+  for (let i = changeInDrawer.length - 1; i >= 0; i--) {
     const coinName = changeInDrawer[i][0];
     const coinTotal = changeInDrawer[i][1];
     const coinValue = currencyDictionary[coinName];
@@ -48,6 +59,10 @@ function getCustomersChange(changeNeeded, changeInDrawer) {
       changeNeeded = changeNeeded.toFixed(2);
       coinAmount--;
       coinsToReturn++;
+    }
+
+    if (coinsToReturn > 0) {
+      change.push([coinName, coinsToReturn * coinValue]);
     }
   }
 }
@@ -73,17 +88,3 @@ function getTotalCashRegisterChange(changeInDrawer) {
 
   return total.toFixed(2);
 }
-
-console.log(
-  checkCashRegister(19.5, 20, [
-    ["PENNY", 1.01],
-    ["NICKEL", 2.05],
-    ["DIME", 3.1],
-    ["QUARTER", 4.25],
-    ["ONE", 90],
-    ["FIVE", 55],
-    ["TEN", 20],
-    ["TWENTY", 60],
-    ["ONE HUNDRED", 100]
-  ])
-);
