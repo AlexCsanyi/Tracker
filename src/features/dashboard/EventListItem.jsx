@@ -4,6 +4,7 @@ import EventListAttendee from "./EventListAttendee";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deleteEvent } from "./redux/eventAction";
+import { format } from "date-fns/esm";
 
 export default function EventListItem({ event }) {
   const dispatch = useDispatch();
@@ -13,11 +14,7 @@ export default function EventListItem({ event }) {
       <Segment>
         <Item.Group>
           <Item>
-            <Item.Image
-              size="tiny"
-              circular
-              src={event.hostPhotoURL}
-            ></Item.Image>
+            <Item.Image size="tiny" circular src={event.hostPhotoURL}></Item.Image>
             <Item.Content>
               <Item.Header content={event.title}></Item.Header>
               <Item.Description>Hosted by {event.hostedBy}</Item.Description>
@@ -27,17 +24,14 @@ export default function EventListItem({ event }) {
       </Segment>
       <Segment>
         <span>
-          <Icon name="clock"></Icon> {event.date}
+          <Icon name="clock"></Icon> {format(event.date, "MMMM d, yyyy h:mm aa")}
           <Icon name="marker"></Icon> {event.venue}
         </span>
       </Segment>
       <Segment secondary>
         <List horizontal>
           {event.attendees.map((attendee) => (
-            <EventListAttendee
-              key={attendee.id}
-              attendee={attendee}
-            ></EventListAttendee>
+            <EventListAttendee key={attendee.id} attendee={attendee}></EventListAttendee>
           ))}
         </List>
       </Segment>
@@ -49,13 +43,7 @@ export default function EventListItem({ event }) {
           floated="right"
           content="Delete"
         ></Button>
-        <Button
-          color="teal"
-          as={Link}
-          to={`/events/${event.id}`}
-          floated="right"
-          content="View"
-        ></Button>
+        <Button color="teal" as={Link} to={`/events/${event.id}`} floated="right" content="View"></Button>
       </Segment>
     </Segment.Group>
   );
