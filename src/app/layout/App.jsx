@@ -6,12 +6,14 @@ import { Route, useLocation } from "react-router-dom";
 import HomePage from "./../../features/home/HomePage";
 import EventDetailPage from "../../features/eventdetails/EventDetailPage";
 import EventForm from "./../../features/form/EventForm";
+import ModalManager from "../common/modals/ModalManager";
 
 export default function App() {
   const { key } = useLocation();
 
   return (
     <>
+      <ModalManager />
       <Route exact path="/" component={HomePage} />
       <Route
         path={"/(.+)"}
@@ -21,11 +23,7 @@ export default function App() {
             <Container className="main">
               <Route exact path="/events" component={EventDashboard} />
               <Route path="/events/:id" component={EventDetailPage} />
-              <Route
-                path={["/createEvent", "/manage/:id"]}
-                component={EventForm}
-                key={key}
-              />
+              <Route path={["/createEvent", "/manage/:id"]} component={EventForm} key={key} />
             </Container>
           </>
         )}
